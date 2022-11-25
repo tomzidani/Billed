@@ -12,6 +12,7 @@ import mockStore from "../__mocks__/store.js"
 import router from "../app/Router.js"
 import Bills from "../containers/Bills.js"
 import userEvent from "@testing-library/user-event"
+import * as formatter from "../app/format.js"
 
 describe("Given I am connected as an employee", () => {
   const onNavigate = (pathname) => (document.body.innerHTML = ROUTES({ pathname }))
@@ -60,7 +61,31 @@ describe("Given I am connected as an employee", () => {
 
       const html = BillsUI({ data: billsList })
       document.body.innerHTML = html
+
+      const billsTable = getByTestId(document, "tbody")
+      const billsElements = billsTable.querySelectorAll("tr")
+
+      expect(Array.from(billsElements).length).toBe(4)
     })
+  })
+
+  test("Get bills without store", async () => {
+    const bills = new Bills({ document, onNavigate, store: null, localStorage })
+    const billsList = await bills.getBills()
+
+    expect(billsList).toBeUndefined()
+  })
+
+  test("Get bills with store", async () => {
+    jest.spyOn(formatter, "formatDate")
+    jest.spyOn(formatter, "formatStatus")
+
+    const bills = new Bills({ document, onNavigate, store: mockStore, localStorage })
+    const billsList = await bills.getBills()
+
+    expect(formatter.formatDate).toHaveBeenCalledTimes(4)
+    expect(formatter.formatStatus).toHaveBeenCalledTimes(4)
+    expect(billsList.length).toBe(4)
   })
 
   describe("When I am on Bills Page with the list of bills loaded", () => {

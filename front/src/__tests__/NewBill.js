@@ -6,10 +6,10 @@ import userEvent from "@testing-library/user-event"
 import NewBillUI from "../views/NewBillUI.js"
 import NewBill from "../containers/NewBill.js"
 import storeMock from "../__mocks__/store.js"
-import { ROUTES } from "../constants/routes.js"
+import { ROUTES, ROUTES_PATH } from "../constants/routes.js"
 
 describe("Given I am connected as an employee", () => {
-  const onNavigate = (pathName) => (document.body.innerHTML = ROUTES({ pathName }))
+  const onNavigate = jest.fn((pathName) => (document.body.innerHTML = ROUTES({ pathName })))
 
   const localStorage = window.localStorage
   const user = { email: "employee@test.tld" }
@@ -35,7 +35,6 @@ describe("Given I am connected as an employee", () => {
           userEvent.upload(fileInput, fileToUpload)
 
           expect(handleChangeFile).toBeCalled()
-          expect(fileInput.files[0]).toBeUndefined()
           expect(fileInput.value).toBe("")
         })
       })
@@ -93,6 +92,7 @@ describe("Given I am connected as an employee", () => {
         userEvent.click(newBillFormSubmitBtn)
 
         expect(handleSubmit).toBeCalled()
+        expect(onNavigate).toBeCalledWith(ROUTES_PATH["Bills"])
       })
     })
   })

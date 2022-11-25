@@ -27,10 +27,10 @@ export default class NewBill {
     formData.append("email", email)
 
     if (fileExtension !== "image/jpeg" && fileExtension !== "image/png") {
+      console.log("pas ouf")
       // Reset file input
       const fileInput = this.document.querySelector(`input[data-testid="file"]`)
       fileInput.value = ""
-      fileInput.files = []
 
       // and notify employee
       return alert("Le format du justificatif est invalide (seulement .jpg, .jpeg et .png sont acceptés).")
