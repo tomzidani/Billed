@@ -30,6 +30,7 @@ export default class NewBill {
       // Reset file input
       const fileInput = this.document.querySelector(`input[data-testid="file"]`)
       fileInput.value = ""
+      fileInput.files = []
 
       // and notify employee
       return alert("Le format du justificatif est invalide (seulement .jpg, .jpeg et .png sont acceptés).")
